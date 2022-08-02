@@ -1,18 +1,24 @@
-name: Vulnerability Scan
+name: trivy
 on:
   push:
     branches:
-      - master
-
+      - main
+  pull_request:
 jobs:
-  scan:
-    name: Daily Vulnerability Scan
+  trivy:
+    name: trivy
     runs-on: ubuntu-latest
-    steps:
-      - name: Pull docker image
-        run: docker pull sample
 
-      - uses: lazy-actions/gitrivy@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          image: sample
+    steps:
+       - name: Run Trivy vulnerability scanner
+         uses: aquasecurity/trivy-action@2a2157eb22c08c9a1fac99263430307b8d1bc7a2
+         with:
+          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+       - name: Upload Trivy scan results to GitHub Security tab
+         uses: github/codeql-action/upload-sarif@v1
+         with:
+          sarif_file: 'trivy-results.sarif'
