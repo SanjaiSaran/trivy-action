@@ -16,5 +16,5 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'repo'
-        scan-ref: '/trivy-action'
+        scan-ref: 'SanjaiSaran/trivy'
         trivy-config: trivy.yaml
