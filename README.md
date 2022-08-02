@@ -1,2 +1,1 @@
 # trivy-action
-
